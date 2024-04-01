@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:login_screen/core/color_constants.dart';
 import 'package:login_screen/core/image_constants.dart';
-import 'package:login_screen/view/registration_screen/registration_screen.dart';
+import 'package:login_screen/view/home_screen/home_screen.dart';
+import 'package:login_screen/view/login_screen/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,9 +15,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3)).then((value) =>
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => RegisterScreen())));
+    Future.delayed(Duration(seconds: 3)).then(
+      (value) async {
+        SharedPreferences userObj = await SharedPreferences.getInstance();
+        final isLogged = userObj.getBool("isLogged");
+        if (isLogged == true) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        } else {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        }
+      },
+    );
     super.initState();
   }
 

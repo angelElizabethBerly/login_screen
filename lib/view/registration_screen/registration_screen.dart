@@ -16,8 +16,6 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  String? registeredName;
-  String? registeredPwd;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +45,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 15),
                 TextFormField(
                   controller: userNameController,
+                  cursorColor: ColorConstant.primaryWhite,
+                  style: TextStyle(color: ColorConstant.primaryWhite),
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -59,6 +59,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  obscureText: true,
+                  obscuringCharacter: "*",
+                  cursorColor: ColorConstant.primaryWhite,
+                  style: TextStyle(color: ColorConstant.primaryWhite),
                   controller: passwordController,
                   decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
@@ -81,43 +85,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 await SharedPreferences.getInstance();
                             userObj.setString(
                                 "userName", userNameController.text);
-                            SharedPreferences pwdObj =
-                                await SharedPreferences.getInstance();
-                            pwdObj.setString(
+
+                            userObj.setString(
                                 "password", passwordController.text);
-                            registeredName = userObj.getString("userName");
-                            registeredPwd = pwdObj.getString("password");
-                            setState(() {});
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Invalid username or password")));
                           }
                         },
                         child: Text("Register"))),
                 SizedBox(height: 5),
-                Text(
-                  (registeredName != null && registeredPwd != null)
-                      ? "Registration successful. Login to continue"
-                      : "",
-                  style: TextStyle(
-                      color: ColorConstant.primaryWhite,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 25),
-                ),
-                Visibility(
-                  visible: (registeredName != null && registeredPwd != null)
-                      ? true
-                      : false,
-                  child: TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
-                      },
-                      child: Text(
-                        "Login",
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    },
+                    child: Text("Already have an account? Login",
                         style: TextStyle(
-                            color: ColorConstant.primaryWhite, fontSize: 20),
-                      )),
-                )
+                            color: ColorConstant.primaryWhite,
+                            fontWeight: FontWeight.w500)))
               ],
             ),
           ),
